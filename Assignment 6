@@ -1,0 +1,83 @@
+Q1) Write a program to implement Gaussian NB classifier with 3 classes on numeric data, use 
+make_blobs to create a dataset X of 200 sample points in 2D Space, 3 clusters and each cluster 
+spread (SD) over 1.5. For testing (Prediction), use the following values to test the Gaussian NB 
+Classifier.
+Input (Values) : [-2, 5], [0,0], [6, -0.3] 
+Output : [0 1 1] 
+Print the accuracy score using the accuracy_score() from sklearn.metrics library..
+
+----> Program
+
+# Gaussian Naive Bayes Classifier
+from sklearn.datasets import make_blobs
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+# Create dataset
+X, y = make_blobs(
+ n_samples=200,
+ centers=3,
+ n_features=2,
+ cluster_std=1.5,
+ random_state=42
+)
+# Create Gaussian Naive Bayes classifier
+model = GaussianNB()
+# Train the model
+model.fit(X, y)
+# Test data 
+X_test = [
+ [-2, 5],
+ [0, 0],
+ [6, -0.3]
+]
+# Expected output
+y_test = [0, 1, 1]
+# Predict the classes
+y_pred = model.predict(X_test)
+# Print predictions
+print("Predicted Output:", y_pred)
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+
+Output
+Predicted Output: [0 1 1]
+Accuracy: 1.0
+or
+Predicted Output: [0 1 1]
+Accuracy: 100.0%
+
+Q2 : Write a program to calculate and demonstrate the Euclidean Distance between two data 
+points in Machine Learning. The program should accept two input vectors from the user and 
+display the calculated Euclidean Distance. 
+Input : Data Point: 2 3 4 Data Point: 5 7 6
+Output : Data Point : [2, 3, 4] Data Point : [5, 7, 6] 
+Euclidean Distance = 5.099
+
+
+Program
+
+
+import math
+# Accept two data points
+point1 = list(map(float, input("Enter Data Point 1: ").split()))
+point2 = list(map(float, input("Enter Data Point 2: ").split()))
+# Calculate Euclidean Distance
+sum_squared = 0
+for i in range(len(point1)):
+ sum_squared += (point1[i] - point2[i]) ** 2
+distance = math.sqrt(sum_squared)
+# Display results
+print("\nData Point 1:", point1)
+print("Data Point 2:", point2)
+print("Euclidean Distance =", round(distance, 3))
+
+
+
+Output
+Enter Data Point 1: 2 3 4
+Enter Data Point 2: 5 7 6
+Data Point 1: [2.0, 3.0, 4.0]
+Data Point 2: [5.0, 7.0, 6.0]
+Euclidean Distance = 5.385
