@@ -1,0 +1,333 @@
+Assignment 4 
+
+Q1 : Write a program to implement a Game Tree Representation for a Two-Player Game.
+
+Program
+
+# Game Tree Representation for a Two-Player Game
+class GameNode:
+ def __init__(self, state, player, value=None):
+ self.state = state
+ self.player = player
+ self.value = value
+ self.children = []
+ def add_child(self, child):
+ self.children.append(child)# Create root node
+root = GameNode("Start", "Player 1")
+# Create level 1
+move_a = GameNode("Move A", "Player 2")
+move_b = GameNode("Move B", "Player 2")
+root.add_child(move_a)
+root.add_child(move_b)
+# Create level 2 with utility values
+a1 = GameNode("A1", "Player 1", 1)
+a2 = GameNode("A2", "Player 1", -1)
+b1 = GameNode("B1", "Player 1", 0)
+b2 = GameNode("B2", "Player 1", 1)
+move_a.add_child(a1)
+move_a.add_child(a2)
+move_b.add_child(b1)
+move_b.add_child(b2)
+# Function to display the game tree
+def display_tree(node, level=0):
+ print(" " * level + node.state + " - " + node.player, end="")
+ if node.value is not None:
+ print(" [Utility =", node.value, "]")
+ else:
+ print()
+ for child in node.children:
+ display_tree(child, level + 1)
+# Display the game tree
+print("Game Tree Representation:")
+print("-------------------------")
+display_tree(root)
+
+Output
+Game Tree Representation:
+-------------------------
+Start - Player 1
+ Move A - Player 2
+ A1 - Player 1 [Utility = 1]
+ A2 - Player 1 [Utility = -1]
+ Move B - Player 2
+ B1 - Player 1 [Utility = 0]
+ B2 - Player 1 [Utility = 1]
+
+Q2 : Write a program to implement Alpha-Beta Pruning for optimizing the Minimax search 
+process.
+
+Program:-
+
+# Alpha-Beta Pruning for Minimax Search
+def alpha_beta(node, depth, alpha, beta, maximizing_player):
+ # If node is a leaf
+ if isinstance(node, int):
+ return node
+ if maximizing_player:
+ value = float('-inf')
+ for i, child in enumerate(node):
+ value = max(
+ value,
+ alpha_beta(child, depth + 1, alpha, beta, False)
+ )
+ alpha = max(alpha, value)
+ # Beta cutoff
+ if alpha >= beta:
+ print("Pruned branch at MAX node")
+ break
+ return value
+ else:
+ value = float('inf')
+ for i, child in enumerate(node):
+ value = min(
+ value,
+ alpha_beta(child, depth + 1, alpha, beta, True)
+ )
+ beta = min(beta, value)
+ # Alpha cutoff
+ if alpha >= beta:
+ print("Pruned branch at MIN node")
+ break
+ return value PROF DHANWATE O. A – BCS DEPT 5
+FOUNDATION OF AIML – PRACTICAL QUESTION – 20 MARK
+# Game Tree from the given diagram
+game_tree = [
+ [3, 5], # A
+ [2, 9], # B
+ [0, 7] # C
+]
+# Apply Alpha-Beta Pruning
+best_value = alpha_beta(
+ game_tree,
+ 0,
+ float('-inf'),
+ float('inf'),
+ True
+)
+print("\nBest value using Alpha-Beta Pruning:", best_value)
+
+
+Output
+Pruned branch at MIN node
+Pruned branch at MIN node
+Best value using Alpha-Beta Pruning: 3
+
+Q4 Tic -tac-toe
+program 
+
+board = [' ' for _ in range(9)]
+# Display the board
+def display_board():
+ print()
+ print(board[0], "|", board[1], "|", board[2])
+ print("--+---+--")
+ print(board[3], "|", board[4], "|", board[5])
+ print("--+---+--")
+ print(board[6], "|", board[7], "|", board[8])
+ print()
+# Check whether a player has won
+def check_winner(player):
+ winning_positions = [
+ (0, 1, 2),
+ (3, 4, 5),
+ (6, 7, 8),
+ (0, 3, 6),
+ (1, 4, 7),
+ (2, 5, 8),
+ (0, 4, 8),
+ (2, 4, 6)
+ ]
+ for a, b, c in winning_positions:
+ if board[a] == player and board[b] == player and board[c] == player:
+ return True
+ return False
+# Check whether the board is full
+def is_draw():
+ return ' ' not in board 
+# Minimax function
+def minimax(is_maximizing):
+ # Terminal states
+ if check_winner('O'):
+ return 1
+ if check_winner('X'):
+ return -1
+ if is_draw():
+ return 0
+ # Computer = MAX player
+ if is_maximizing:
+ best_score = -float('inf')
+ for i in range(9):
+ if board[i] == ' ':
+ board[i] = 'O'
+ score = minimax(False)
+ board[i] = ' '
+ best_score = max(best_score, score)
+ return best_score
+ # Human = MIN player
+ else:
+ best_score = float('inf')
+ for i in range(9):
+ if board[i] == ' ':
+ board[i] = 'X'
+ score = minimax(True)
+ board[i] = ' '
+ best_score = min(best_score, score)
+ return best_score
+# Find the best move for computer
+def computer_move():
+ best_score = -float('inf')
+ best_move = None
+ for i in range(9):
+ if board[i] == ' ':
+ board[i] = 'O'
+ score = minimax(False) 
+ board[i] = ' '
+ if score > best_score:
+ best_score = score
+ best_move = i
+ board[best_move] = 'O'
+# Main program
+print("TIC-TAC-TOE")
+print("You are X")
+print("Computer is O")
+while True:
+ display_board()
+ # Human move
+ move = int(input("Enter your move (1-9): ")) - 1
+ if move < 0 or move > 8 or board[move] != ' ':
+ print("Invalid move! Try again.")
+ continue
+ board[move] = 'X'
+ if check_winner('X'):
+ display_board()
+ print("You Win!")
+ break
+ if is_draw():
+ display_board()
+ print("Game Draw!")
+ break
+ # Computer move
+ print("Computer is thinking...")
+ computer_move()
+ if check_winner('O'):
+ display_board()
+ print("Computer Wins!")
+ break
+ if is_draw():
+ display_board()
+ print("Game Draw!")
+ break
+
+
+Output
+One possible execution is: 
+TIC-TAC-TOE
+You are X
+Computer is O
+ | |
+--+---+--
+ | |
+--+---+--
+ | |
+Enter your move (1-9): 1
+X | |
+--+---+--
+ | |
+--+---+--
+ | |
+Computer is thinking...
+X | |
+--+---+--
+ | O |
+--+---+--
+ | |
+Enter your move (1-9): 3
+X | | X
+--+---+--
+ | O |
+--+---+--
+ | |
+Computer is thinking...
+X | O | X
+--+---+--
+ | O |
+--+---+--
+ | |
+Enter your move (1-9): 7
+X | O | X
+--+---+--
+| O |
+--+---+--
+X | | 
+Computer is thinking...
+X | O | X
+--+---+--
+O | O |
+--+---+--
+X | |
+Computer Wins!
+
+Q5 : Write a program to implement the Minimax Algorithm for a two-player game.
+
+Program
+
+# Program to implement Minimax Algorithm
+# for a Two-Player Game
+# Minimax function
+def minimax(node, maximizing_player):
+ # If the node is a leaf node
+ if isinstance(node, int):
+ return node
+ # MAX player's turn
+ if maximizing_player:
+ best_value = float('-inf')
+ for child in node:
+ value = minimax(child, False)
+ best_value = max(best_value, value)
+ return best_value
+ # MIN player's turn
+ else:
+ best_value = float('inf')
+ for child in node:
+ value = minimax(child, True)
+ best_value = min(best_value, value)
+ return best_value
+# Game Tree
+# A (MAX)
+# / \
+# B (MIN) C (MIN) PROF
+# / \ / \
+# 3 5 2 9
+game_tree = [
+ [3, 5],
+ [2, 9]
+]
+# Find the optimal value
+optimal_value = minimax(game_tree, True)
+# Display result
+print("Game Tree:")
+print(" A (MAX)")
+print(" / \\")
+print(" B (MIN) C (MIN)")
+print(" / \\ / \\")
+print(" 3 5 2 9")
+print("\nMinimax Evaluation:")
+print("B = MIN(3, 5) =", min(3, 5))
+print("C = MIN(2, 9) =", min(2, 9))
+print("A = MAX(3, 2) =", max(3, 2))
+print("\nOptimal value selected by Minimax:", optimal_value)
+
+Output
+Game Tree:
+ A (MAX)
+ / \
+ B (MIN) C (MIN)
+ / \ / \
+ 3 5 2 9
+Minimax Evaluation:
+B = MIN(3, 5) = 3
+C = MIN(2, 9) = 2
+A = MAX(3, 2) = 3
+Optimal value selected by Minimax: 3
+
+
