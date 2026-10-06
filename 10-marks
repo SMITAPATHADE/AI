@@ -1,0 +1,311 @@
+Q1: Write a program to implement Breadth First Search (BFS) for the Monkey Banana 
+
+Python Program:
+
+from collections import deque
+# BFS for Monkey Banana Problem
+queue = deque(["Monkey at Door"])
+visited = set()
+while queue:
+ state = queue.popleft()
+ if state in visited:
+ continue
+ visited.add(state)
+ print(state)
+ if state == "Monkey at Door":
+ queue.append("Monkey at Box")
+ elif state == "Monkey at Box":
+ queue.append("Box Under Banana")
+ elif state == "Box Under Banana":
+ queue.append("Monkey Climbs Box")
+ elif state == "Monkey Climbs Box":
+ queue.append("Monkey Gets Banana")
+ elif state == "Monkey Gets Banana":
+ print("Goal: Banana Obtained!")
+ break
+
+
+
+Expected Output:
+Monkey at Door
+Monkey at Box
+Box Under Banana
+Monkey Climbs Box
+Monkey Gets Banana
+Goal: Banana Obtained!
+
+Q2: Write a program to solve the Water Jug Problem using BFS.
+
+Python Program:
+
+from collections import deque
+def water_jug():
+ visited = set()
+ queue = deque([(0, 0)])
+ while queue:
+ x, y = queue.popleft()
+ if (x, y) in visited:
+ continue
+ visited.add((x, y))
+ if x == 2 or y == 2:
+ print("Solution:", (x, y))
+ return
+ states = [
+ (4, y), # Fill 4-litre jug
+ (x, 3), # Fill 3-litre jug
+ (0, y), # Empty 4-litre jug
+ (x, 0), # Empty 3-litre jug
+ # Pour 4-litre jug into 3-litre jug
+ (max(0, x - (3 - y)), min(3, x + y)),
+ # Pour 3-litre jug into 4-litre jug
+ (min(4, x + y), max(0, y - (4 - x)))
+ ]
+ for state in states:
+ if state not in visited:
+ queue.append(state)
+water_jug()
+
+Expected Output: Solution: (2, 3)
+
+Q3: Write a program to implement BFS traversal for a graph.
+
+Python Program:
+
+from collections import deque
+# Graph represented using adjacency list
+graph = {
+ 1: [2, 3],
+ 2: [4, 5],
+ 3: [6, 7],
+ 4: [8, 9],
+ 5: [10, 11],
+ 6: [12, 13],
+ 7: [14, 15],
+ 8: [],
+ 9: [],
+ 10: [],
+ 11: [],
+ 12: [],
+ 13: [],
+ 14: [],
+ 15: []
+}
+def bfs(graph, start):
+ visited = set()
+ queue = deque([start])
+ visited.add(start)  
+ print("BFS Traversal:")
+ while queue:
+ node = queue.popleft()
+ print(node, end=" ")
+ for neighbour in graph[node]:
+ if neighbour not in visited:
+ visited.add(neighbour)
+ queue.append(neighbour)
+# Start BFS from node 1
+bfs(graph, 1)
+
+Q4 : Write a program to solve a state-space search problem using BFS.
+
+Python Program:
+
+from collections import deque
+# State-space graph
+graph = {
+ 'A': ['B', 'C'],
+ 'B': ['A', 'D'],
+ 'C': ['A', 'E'],
+ 'D': ['B', 'E'],
+ 'E': ['C', 'D']
+}
+def bfs(start):
+ visited = set() 
+ queue = deque()
+ # Add start vertex
+ queue.append(start)
+ visited.add(start)
+ print("BFS Traversal:")
+ while queue:
+ vertex = queue.popleft()
+ print(vertex, end=" ")
+ # Visit all adjacent states
+for neighbour in graph[vertex]:
+ if neighbour not in visited:
+ visited.add(neighbour)
+ queue.append(neighbour)
+# Start BFS from A
+bfs('A')
+
+
+Output : BFS Traversal: A B C D E
+
+Q5: Write a program implement Iterative Deepening Search (IDS).
+Python Program :
+# Iterative Deepening Search (IDS)
+graph = {
+ 'A': ['B', 'C'],
+ 'B': ['D', 'E'],
+ 'C': ['F'],
+ 'D': [],
+ 'E': [],
+ 'F': []
+}
+def depth_limited_search(node, depth):
+ print(node, end=" ") FOUNDATION OF AIML – PRACTICAL QUESTIONS –
+10 MARK PROF DHANWATE O. A.
+FOUNDATION OF AIML – PRACTICAL QUESTIONS – 10 MARK
+ if depth == 0:
+ return
+ for child in graph[node]:
+ depth_limited_search(child, depth - 1)
+def iterative_deepening_search(start, max_depth):
+ for depth in range(max_depth + 1):
+ print("\nDepth", depth, ":", end=" ")
+ depth_limited_search(start, depth)
+# Start vertex
+start = 'A'
+# Maximum depth
+max_depth = 2
+print("Iterative Deepening Search:")
+iterative_deepening_search(start, max_depth)
+
+Output : 
+Iterative Deepening Search:
+Depth 0 : A
+Depth 1 : A B C
+Depth 2 : A B D E C F
+
+Q6: Write a program to implement DFS traversal for a graph.
+
+Python Program:
+
+# DFS Traversal of a Graph
+graph = {
+ 'A': ['B', 'C', 'E'],
+ 'B': ['A', 'D'], FOUNDATION OF AIML – PRACTICAL QUESTIONS –
+10 MARK PROF DHANWATE O. A.
+FOUNDATION OF AIML – PRACTICAL QUESTIONS – 10 MARK
+ 'C': ['A', 'F'],
+ 'D': ['B', 'E'],
+ 'E': ['A', 'D', 'F'],
+ 'F': ['C', 'E']
+}
+visited = set()
+def dfs(vertex):
+ # Mark the vertex as visited
+ visited.add(vertex)
+ print(vertex, end=" ")
+ # Visit all unvisited adjacent vertices
+ for neighbour in graph[vertex]:
+ if neighbour not in visited:
+ dfs(neighbour)
+# Start DFS from A
+print("DFS Traversal:")
+dfs('A')
+
+Output: DFS Traversal: A B D E F C
+
+Q7 : Write a program to solve a state-space search problem using DFS.
+Python Program:
+# DFS for State-Space Search
+graph = {
+ 1: [2, 3],
+ 2: [1, 4],
+ 3: [1, 5],
+ 4: [2, 5, 6],
+ 5: [3, 4, 6],
+ 6: [4, 5]
+}
+visited = set()
+def dfs(vertex):
+ # Mark the vertex as visited
+ visited.add(vertex)
+ print(vertex, end=" ")
+ # Visit unvisited adjacent vertices
+ for neighbour in graph[vertex]:
+ if neighbour not in visited:
+ dfs(neighbour)
+# Start DFS from vertex 1
+print("DFS State-Space Search:")
+dfs(1)
+
+Q8: Write a program to implement Depth Limited Search (DLS).
+
+Python Program:
+
+
+# Depth-Limited Search (DLS) 
+graph = {
+ 1: [2, 3],
+ 2: [4, 5],
+ 3: [6],
+ 4: [],
+ 5: [],
+ 6: []
+}
+def dls(node, depth):
+ print(node, end=" ")
+ # Stop when depth limit is reached
+ if depth == 0:
+ return
+ # Visit child nodes
+ for child in graph[node]:
+ dls(child, depth - 1)
+# Start vertex and depth limit
+start = 1
+max_depth = 2
+print("Depth-Limited Search:")
+dls(start, max_depth)
+
+Output : Depth-Limited Search: 1 2 4 5 3 6
+
+
+Q 9: Write a program to solve the Tower of Hanoi Problem using state-space representation.
+
+Python Program:
+
+
+# Tower of Hanoi using State-Space Representation 
+def tower_of_hanoi(n, source, auxiliary, destination, state):
+ 
+ # Base condition
+ if n == 0:
+ return
+ # Move n-1 disks from source to auxiliary
+ tower_of_hanoi(n - 1, source, destination, auxiliary, state)
+ # Move the largest disk to destination
+ print("Move disk", n, "from", source, "to", destination)
+ # Update state
+ state[n - 1] = destination
+ print("State:", tuple(state))
+ # Move n-1 disks from auxiliary to destination
+ tower_of_hanoi(n - 1, auxiliary, source, destination, state)
+# Number of disks
+n = 3
+# Initial state: all disks are on A
+state = ['A'] * n
+print("Initial State:", tuple(state))
+print("\nSteps:")
+tower_of_hanoi(n, 'A', 'B', 'C', state)
+print("\nGoal State:", tuple(state))
+
+
+Output :
+Initial State: ('A', 'A', 'A')
+Steps:
+Move disk 1 from A to C
+State: ('C', 'A', 'A')
+Move disk 2 from A to B
+State: ('C', 'B', 'A')
+Move disk 1 from C to B
+State: ('B', 'B', 'A')
+Move disk 3 from A to C
+State: ('B', 'B', 'C') 
+Move disk 1 from B to A
+State: ('A', 'B', 'C')
+Move disk 2 from B to C
+State: ('A', 'C', 'C')
+Move disk 1 from A to C
+State: ('C', 'C', 'C')
+Goal State: ('C', 'C', 'C')
+
