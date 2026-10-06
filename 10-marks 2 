@@ -1,0 +1,337 @@
+Q1 : Write a program to implement the A* Search Algorithm to find the shortest path between 
+a source node and a destination node.
+Python Program
+
+
+import heapq 
+# Graph with edge costs
+graph = {
+ 'A': [('B', 1), ('C', 1)],
+ 'B': [('D', 1), ('E', 1)],
+ 'C': [('F', 1)],
+ 'D': [],
+ 'E': [],
+ 'F': []
+}
+# Heuristic values: estimated cost to reach F
+heuristic = {
+ 'A': 2,
+ 'B': 3,
+ 'C': 1,
+ 'D': 4,
+ 'E': 4,
+ 'F': 0
+}
+def a_star(source, destination):
+ # Priority queue: (f, g, node, path)
+ open_list = []
+ heapq.heappush(open_list, (heuristic[source], 0, source, [source]))
+ visited = set()
+ while open_list:
+ f, g, current, path = heapq.heappop(open_list)
+ if current in visited:
+ continue
+ visited.add(current)
+ # Destination reached
+ if current == destination:
+ return path, g
+ # Explore neighbouring nodes
+ for neighbour, cost in graph[current]:
+ if neighbour not in visited:
+ new_g = g + cost
+ new_f = new_g + heuristic[neighbour]
+ heapq.heappush 
+open_list,
+ (new_f, new_g, neighbour, path + [neighbour])
+ )
+ return None, None
+# Source and destination
+source = 'A'
+destination = 'F'
+path, cost = a_star(source, destination)
+print("Source Node:", source)
+print("Destination Node:", destination)
+print("Shortest Path:", " -> ".join(path))
+print("Path Cost:", cost)
+
+
+Output
+Source Node: A
+Destination Node: F
+Shortest Path: A -> C -> F
+Path Cost: 2
+
+Q2 : Write the program to implement the AO* Algorithm
+Python Program :
+
+
+# AO* Algorithm for AND-OR Graph
+graph = {
+ 'A': {
+ 'type': 'OR',
+ 'children': [('B', 2), ('C', 3)]
+ },
+ 'B': {
+ 'type': 'AND',
+ 'children': [('D', 1), ('E', 4)]
+ },
+ 'C': { 
+ 'type': 'OR',
+ 'children': [('F', 2), ('G', 5)]
+ },
+ 'D': {
+ 'type': 'OR',
+ 'children': [('H', 2), ('I', 3)]
+ },
+ 'E': {
+ 'type': 'OR',
+ 'children': [('J', 1)]
+ },
+ # Goal nodes
+ 'F': {'type': 'GOAL', 'children': []},
+ 'G': {'type': 'GOAL', 'children': []},
+ 'H': {'type': 'GOAL', 'children': []},
+ 'I': {'type': 'GOAL', 'children': []},
+ 'J': {'type': 'GOAL', 'children': []}
+}
+def ao_star(node):
+ # If node is a goal node
+ if graph[node]['type'] == 'GOAL':
+ return 0, [node]
+ children = graph[node]['children']
+ if graph[node]['type'] == 'OR':
+ # Choose the child having minimum cost
+ best_cost = float('inf')
+ best_path = None
+ for child, edge_cost in children:
+ child_cost, child_path = ao_star(child)
+ total_cost = edge_cost + child_cost
+ if total_cost < best_cost:
+ best_cost = total_cost
+ best_path = [node] + child_path
+ return best_cost, best_path
+ elif graph[node]['type'] == 'AND':
+ # All children must be solved 
+ total_cost = 0
+ path = [node]
+ for child, edge_cost in children:
+ child_cost, child_path = ao_star(child)
+ total_cost += edge_cost + child_cost
+ path += child_path
+ return total_cost, path
+# Start AO* from node A
+cost, solution = ao_star('A')
+print("AO* Solution:")
+print(" -> ".join(solution))
+print("Total Cost:", cost)
+
+
+Output
+AO* Solution: A -> C -> F
+Total Cost: 5
+
+
+Q3: Write a program to demonstrate the Hill Climbing Algorithm for finding the maximum 
+value of a simple objective function. (F(x) = -x^2 + 4x)
+Python Program:
+
+
+# Hill Climbing Algorithm
+# Objective Function: F(x) = -x^2 + 4x
+def f(x):
+ return -x**2 + 4*x
+def hill_climbing(start, step=1):
+ current = start
+ while True:
+ current_value = f(current)
+ # Generate neighbouring values
+ left = current - step
+ right = current + step
+ # Select the better neighbour
+ if f(left) > current_value:
+ current = left
+ elif f(right) > current_value: 
+ current = right
+ else:
+ break
+ return current, f(current)
+# Starting point
+start = 0
+# Apply Hill Climbing
+x, maximum = hill_climbing(start)
+print("Starting Point:", start)
+print("Maximum value occurs at x =", x)
+print("Maximum value of F(x) =", maximum)
+
+
+Output
+Starting Point: 0
+Maximum value occurs at x = 2
+Maximum value of F(x) = 4
+
+
+Q4 : Write a program to solve the 4-Puzzle Problem using the A* 
+Python Program:
+
+
+
+import heapq
+# Initial and goal states
+start = (1, 0, 3, 2)
+goal = (1, 2, 3, 0)
+# Manhattan Distance Heuristic
+def heuristic(state):
+ distance = 0
+ for i in range(4):
+ if state[i] == 0:
+ continue
+ # Current position
+ row1 = i // 2
+ col1 = i % 2
+ # Goal position
+ goal_index = goal.index(state[i])
+ row2 = goal_index // 2
+ col2 = goal_index % 2
+ distance += abs(row1 - row2) + abs(col1 - col2)
+ return distance
+# Generate possible next states
+def get_neighbors(state):
+ neighbors = []
+ blank = state.index(0) 
+ row = blank // 2
+ col = blank % 2
+ moves = [
+ (-1, 0), # Up
+ (1, 0), # Down
+ (0, -1), # Left
+ (0, 1) # Right
+ ]
+ for dr, dc in moves:
+ new_row = row + dr
+ new_col = col + dc
+ if 0 <= new_row < 2 and 0 <= new_col < 2:
+ new_blank = new_row * 2 + new_col
+ new_state = list(state)
+ # Swap blank with tile
+ new_state[blank], new_state[new_blank] = \
+ new_state[new_blank], new_state[blank]
+ neighbors.append(tuple(new_state))
+ return neighbors
+# A* Search Algorithm
+def a_star(start, goal):
+ # Priority queue: (f, g, state, path)
+ open_list = []
+ heapq.heappush(
+ open_list,
+ (heuristic(start), 0, start, [start])
+ )
+ visited = set()
+ while open_list:
+ f, g, current, path = heapq.heappop(open_list)
+ if current in visited:
+ continue
+ visited.add(current)
+ # Goal reached
+ if current == goal:
+ return path FOUNDA
+# Generate next states
+ for neighbor in get_neighbors(current):
+ if neighbor not in visited:
+ new_g = g + 1
+ new_f = new_g + heuristic(neighbor)
+ heapq.heappush(
+ open_list,
+ (new_f, new_g, neighbor, path + [neighbor])
+ )
+ return None
+# Solve the puzzle
+solution = a_star(start, goal)
+print("Initial State:")
+print("1 0")
+print("3 2")
+print("\nGoal State:")
+print("1 2")
+print("3 0")
+print("\nSolution Path:")
+for state in solution:
+ print()
+ print(state[0], state[1])
+ print(state[2], state[3])
+
+
+Output
+Initial State:
+1 0
+3 2
+Goal State:
+1 2
+3 0
+Solution Path:
+1 0
+3 2
+1 2
+3 0
+
+
+Q5 : Write a program to implement the Best First Search Algorithm using heuristic values to 
+find a path from a start node to a goal node
+Python Program:
+
+
+import heapq
+# Graph with edge costs
+graph = {
+ 'A': [('B', 2), ('C', 4)],
+ 'B': [('A', 2), ('D', 3), ('E', 5)],
+ 'C': [('A', 4), ('F', 1)],
+ 'D': [('B', 3), ('F', 2)],
+ 'E': [('B', 5), ('F', 1)],
+ 'F': [('C', 1), ('D', 2), ('E', 1)]
+}
+# Heuristic values
+heuristic = {
+ 'A': 6,
+ 'B': 5,
+ 'C': 3,
+ 'D': 2,
+ 'E': 1,
+ 'F': 0
+}
+def best_first_search(start, goal):
+ # Priority queue: (heuristic, node, path)
+ open_list = []
+ heapq.heappush(open_list, (heuristic[start], start, [start]))
+ visited = set()
+ while open_list:
+ h, current, path = heapq.heappop(open_list)
+ if current in visited:
+ continue
+ visited.add(current)
+ print("Visiting:", current, "h =", heuristic[current])
+ # Goal test
+ if current == goal:
+ return path
+ # Add unvisited neighbours
+ for neighbour, cost in graph[current]:
+ if neighbour not in visited:
+ heapq.heappush(
+ open_list,
+ (heuristic[neighbour], neighbour, path + [neighbour])
+ )
+ return None
+# Start and goal
+start = 'A'
+goal = 'F'
+path = best_first_search(start, goal)
+print("\nBest First Search Path:")
+print(" -> ".join(path))
+
+
+
+Output
+Visiting: A h = 6 
+Visiting: C h = 3
+Visiting: F h = 0
+Best First Search Path: A -> C -> F
+
+
